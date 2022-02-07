@@ -22,21 +22,62 @@ main {
     grid-row: 2;
     background: blue;
     display: grid;
-    grid-template: auto / auto auto;
+    grid-template: 50% 50% / 50% 50%;
+}
+
+main article h1 {
+    text-align: center;
+    margin: 1rem;
 }
 
 main .article-buttons {
     grid-column: 1;
+    grid-row: 1;
 }
 
-main .article-buttons .rps-rock, main article .rps-paper, main article .rps-scissor {
+main .article-buttons .button-container {
+    display: flex;
+    justify-content: center;
+}
+
+main .article-buttons .button-container .rps-rock, main article .rps-paper, main article .rps-scissor {
     height: 3rem;
     width: 3rem;
 } 
 
+main .article-leaderboard {
+    background: yellow;
+    display:grid;
+    grid-template: auto auto / 40% auto 40%;
+}
+
+main .article-leaderboard h1 {
+    grid-row: 1;
+}
+
+main .article-leaderboard ul {
+    grid-row: 2;
+}
+
+main .article-leaderboard, main .article-buttons{
+    display: grid;
+    grid-template: 20% auto / auto;
+}
+
+main .article-history {
+    display: grid;
+    grid-template: 10% auto / auto;
+}
+
 main .article-history {
     grid-column: 2;
-    background: black;
+    grid-row: 1/3;
+    background: white;
+}
+
+main .article-history table {
+    display: grid;
+    grid-template: auto auto / auto;
 }
 
 footer {
