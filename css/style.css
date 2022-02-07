@@ -21,6 +21,22 @@ header {
 main {
     grid-row: 2;
     background: blue;
+    display: grid;
+    grid-template: auto / auto auto;
+}
+
+main .article-buttons {
+    grid-column: 1;
+}
+
+main .article-buttons .rps-rock, main article .rps-paper, main article .rps-scissor {
+    height: 3rem;
+    width: 3rem;
+} 
+
+main .article-history {
+    grid-column: 2;
+    background: black;
 }
 
 footer {
