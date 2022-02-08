@@ -1,8 +1,8 @@
 function  loaded() {
     const input = document.createElement("input"),
     submit = document.createElement("input");
-    let name;
-    let dbdata;
+    let name = null;
+    let dbdata = null;
     let userscore = 0;
     document.querySelector("main").appendChild(document.createElement("form"));
     input.setAttribute("type", "text");
@@ -118,7 +118,7 @@ function  loaded() {
         else if(winner === "cpu") {
             thuser.style.opacity = 0.5;
             for(let i = 0; i < dbdata.length; i++){
-                if(dbdata[i].score = userscore){
+                if(dbdata[i].score === userscore){
                     updatehighscore(i);
                     break
                 }
