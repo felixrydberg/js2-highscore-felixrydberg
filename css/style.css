@@ -40,9 +40,23 @@ main .article-buttons .button-container {
     justify-content: center;
 }
 
-main .article-buttons .button-container .rps-rock, main article .rps-paper, main article .rps-scissor {
+main .article-buttons .button-container .rps-rock {
+    background: url("../img/sten.jpg");
+}
+
+main .article-buttons .button-container .rps-paper {
+    background: url("../img/paper.jpg");
+}
+
+main .article-buttons .button-container .rps-scissor {
+    background: url("../img/sax.jpg");
+}
+
+main .article-buttons .button-container .rps-rock, main .article-buttons .button-container .rps-paper, main .article-buttons .button-container .rps-scissor {
     height: 3rem;
     width: 3rem;
+    border: none;
+    background-size: contain;
 } 
 
 main .article-leaderboard {
