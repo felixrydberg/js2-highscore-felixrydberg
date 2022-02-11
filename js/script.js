@@ -1,9 +1,21 @@
-function  loaded() {
+// TODO:
+    // Fix name
+    // Fix updatehighscore so it sorts
+
+
+
+
+
+// Eventlistener for window
+window.addEventListener('load', function(){
+    spawnForm()
+    spawnGame()
+});
+
+// Spawns Form
+function spawnForm() {
     const input = document.createElement("input"),
     submit = document.createElement("input");
-    let name = null;
-    let dbdata = null;
-    let userscore = 0;
     document.querySelector("main").appendChild(document.createElement("form"));
     input.setAttribute("type", "text");
     input.setAttribute("placeholder", "Username");
@@ -13,12 +25,22 @@ function  loaded() {
     submit.setAttribute("value", "Start game");
     document.querySelector("form").appendChild(input)
     document.querySelector("form").appendChild(submit)
+};
 
+// Spawns Game
+function spawnGame() {
     document.querySelector("form").addEventListener("submit", function(event){
         event.preventDefault()
-        name = document.querySelector(".rps-name").value
         startgame(document.querySelector(".rps-name").value)
-    })
+    });
+
+    const userscore = userpoints(0)
+    function userpoints(x) {
+        return function(y) {
+            x = x + y
+            return x
+        }
+    }
     
     // Spawn and clean up html stucture
     function startgame(name) {
@@ -105,21 +127,20 @@ function  loaded() {
         cpuchoice = numberdecoder(cpuchoice);
         const tr = document.createElement("tr"),
         thuser = document.createElement("th"),
-        thcpu = document.createElement("th")
+        thcpu = document.createElement("th");
         document.querySelector("table").appendChild(tr)
         tr.appendChild(thuser).innerHTML = `User: ${playerchoice}`;
         tr.appendChild(thcpu).innerHTML = `Cpu: ${cpuchoice}`;
         if(winner === "user") {
             thcpu.style.opacity = 0.5;
-            userscore++;
-            document.querySelector(".th-user").innerHTML = `User: ${userscore}`
-            console.log(`Userscore: ${userscore}`)
+            userscore(1);
+            document.querySelector(".th-user").innerHTML = `User: ${userscore(0)}`
         }
         else if(winner === "cpu") {
             thuser.style.opacity = 0.5;
             for(let i = 0; i < dbdata.length; i++){
-                if(dbdata[i].score === userscore){
-                    updatehighscore(i);
+                if(dbdata[i].score === userscore(0)){
+                    updatehighscore(i, userscore(0));
                     break
                 }
             }
@@ -131,16 +152,15 @@ function  loaded() {
         }
     }
 
-    function updatehighscore(i) {
+    function updatehighscore(i, score) {
         fetch(`https://rockpaperscissors-73f7c-default-rtdb.europe-west1.firebasedatabase.app/${i}.json`, {
             method: 'PUT',
             body: JSON.stringify({
-                'name': name,
-                'score': userscore 
+                'name': ,
+                'score': score 
             }),
             headers: {'Content-type': 'application/json; charset=UTF-8'}
         })
-
     }
 
     // Translates number into the corresponding string 
@@ -162,8 +182,18 @@ function  loaded() {
         document.querySelector(".article-history").remove()
         document.querySelector(".article-buttons").remove()
         alert("You lost :(")
-        loaded()
+        spawnForm()
+        spawnGame()
     }
 }
 
-loaded();
+
+
+function counter() {
+    let counter = 0;
+    return function counterUp(x) {
+        return counter + x
+    }
+}
+
+counter()
