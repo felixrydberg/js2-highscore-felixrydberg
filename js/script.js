@@ -69,7 +69,6 @@ function game(parameter) {
 
     // Callback function for fetch
     function leaderboard(data) {
-        dbdata = data;
         document.querySelector(".article-leaderboard").appendChild(document.createElement("ul"));
         for(let i = 0; i < data.length; i++) {
             y = i + 1
