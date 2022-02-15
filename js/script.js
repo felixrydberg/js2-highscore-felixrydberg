@@ -1,15 +1,9 @@
 // TODO:
-    // Fix name
-    // Fix updatehighscore so it sorts
-
-
-
-
-
+    // Fix namemaybe.......
+    // Fix fetchhighscore so it sorts
 // Eventlistener for window
 window.addEventListener('load', function(){
     spawnForm()
-    spawnGame()
 });
 
 // Spawns Form
@@ -25,16 +19,22 @@ function spawnForm() {
     submit.setAttribute("value", "Start game");
     document.querySelector("form").appendChild(input)
     document.querySelector("form").appendChild(submit)
+    document.querySelector("form").addEventListener("submit", function(event){
+        event.preventDefault()
+        game(document.querySelector(".rps-name").value)
+    });
 };
 
 // Spawns Game
-function spawnGame() {
-    document.querySelector("form").addEventListener("submit", function(event){
-        event.preventDefault()
-        startgame(document.querySelector(".rps-name").value)
-    });
-
+function game(parameter) {
+    startgame(parameter)
+    const name = nameclosure(parameter)
     const userscore = userpoints(0)
+    function nameclosure(x){
+        return function() {
+            return x
+        }
+    }
     function userpoints(x) {
         return function(y) {
             x = x + y
@@ -138,12 +138,7 @@ function spawnGame() {
         }
         else if(winner === "cpu") {
             thuser.style.opacity = 0.5;
-            for(let i = 0; i < dbdata.length; i++){
-                if(dbdata[i].score === userscore(0)){
-                    updatehighscore(i, userscore(0));
-                    break
-                }
-            }
+            fetchhighscore(userscore(0))
             reset()
         }
         else {
@@ -152,13 +147,35 @@ function spawnGame() {
         }
     }
 
-    function updatehighscore(i, score) {
+    function fetchhighscore(score) {
+        let json = fetchdata()
+        async function fetchdata() {
+            const data = await fetch(`https://rockpaperscissors-73f7c-default-rtdb.europe-west1.firebasedatabase.app/.json`)
+            return data.json()
+        }
+        json.then(d => updatehighscore(d, score))
+    }
+
+    function updatehighscore(data, score) {
+        let scores = [];
+        for(var i in data) {
+            scores.push(data[i]);
+        }
+        scores.push({'name': name(), 'score': score});
+        scores.sort(function (a, b) {
+            return b.score - a.score;
+        });
+        for(let i = 0; i < 5; i++) {
+            puthighscore(scores[i], i);
+        }
+    }
+
+    // fetchhighscore(20);
+
+    function puthighscore(score, i){
         fetch(`https://rockpaperscissors-73f7c-default-rtdb.europe-west1.firebasedatabase.app/${i}.json`, {
             method: 'PUT',
-            body: JSON.stringify({
-                'name': ,
-                'score': score 
-            }),
+            body: JSON.stringify({'name': score.name,'score': score.score}),
             headers: {'Content-type': 'application/json; charset=UTF-8'}
         })
     }
@@ -181,19 +198,7 @@ function spawnGame() {
         document.querySelector(".article-leaderboard").remove()
         document.querySelector(".article-history").remove()
         document.querySelector(".article-buttons").remove()
-        alert("You lost :(")
+        alert(`You lost with a highscore of: ${userscore(0)}`)
         spawnForm()
-        spawnGame()
     }
 }
-
-
-
-function counter() {
-    let counter = 0;
-    return function counterUp(x) {
-        return counter + x
-    }
-}
-
-counter()
