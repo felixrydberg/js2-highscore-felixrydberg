@@ -1,6 +1,3 @@
-// TODO:
-    // Fix namemaybe.......
-    // Fix fetchhighscore so it sorts
 // Eventlistener for window
 window.addEventListener('load', function(){
     spawnForm()
@@ -30,11 +27,13 @@ function game(parameter) {
     startgame(parameter)
     const name = nameclosure(parameter)
     const userscore = userpoints(0)
+    // Closure for name
     function nameclosure(x){
         return function() {
             return x
         }
     }
+    // Closure for Points
     function userpoints(x) {
         return function(y) {
             x = x + y
@@ -147,6 +146,7 @@ function game(parameter) {
         }
     }
 
+    // Fetch data and call updatehighscore
     function fetchhighscore(score) {
         let json = fetchdata()
         async function fetchdata() {
@@ -156,6 +156,7 @@ function game(parameter) {
         json.then(d => updatehighscore(d, score))
     }
 
+    // Sort highscore and call puthighscore
     function updatehighscore(data, score) {
         let scores = [];
         for(var i in data) {
@@ -170,6 +171,7 @@ function game(parameter) {
         }
     }
 
+    // Put highscore into db
     function puthighscore(score, i){
         fetch(`https://rockpaperscissors-73f7c-default-rtdb.europe-west1.firebasedatabase.app/${i}.json`, {
             method: 'PUT',
