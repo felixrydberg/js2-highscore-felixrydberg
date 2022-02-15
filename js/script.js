@@ -1,9 +1,15 @@
-function  loaded() {
+// TODO:
+    // Fix namemaybe.......
+    // Fix fetchhighscore so it sorts
+// Eventlistener for window
+window.addEventListener('load', function(){
+    spawnForm()
+});
+
+// Spawns Form
+function spawnForm() {
     const input = document.createElement("input"),
     submit = document.createElement("input");
-    let name = null;
-    let dbdata = null;
-    let userscore = 0;
     document.querySelector("main").appendChild(document.createElement("form"));
     input.setAttribute("type", "text");
     input.setAttribute("placeholder", "Username");
@@ -13,12 +19,28 @@ function  loaded() {
     submit.setAttribute("value", "Start game");
     document.querySelector("form").appendChild(input)
     document.querySelector("form").appendChild(submit)
-
     document.querySelector("form").addEventListener("submit", function(event){
         event.preventDefault()
-        name = document.querySelector(".rps-name").value
-        startgame(document.querySelector(".rps-name").value)
-    })
+        game(document.querySelector(".rps-name").value)
+    });
+};
+
+// Spawns Game
+function game(parameter) {
+    startgame(parameter)
+    const name = nameclosure(parameter)
+    const userscore = userpoints(0)
+    function nameclosure(x){
+        return function() {
+            return x
+        }
+    }
+    function userpoints(x) {
+        return function(y) {
+            x = x + y
+            return x
+        }
+    }
     
     // Spawn and clean up html stucture
     function startgame(name) {
@@ -105,24 +127,18 @@ function  loaded() {
         cpuchoice = numberdecoder(cpuchoice);
         const tr = document.createElement("tr"),
         thuser = document.createElement("th"),
-        thcpu = document.createElement("th")
+        thcpu = document.createElement("th");
         document.querySelector("table").appendChild(tr)
         tr.appendChild(thuser).innerHTML = `User: ${playerchoice}`;
         tr.appendChild(thcpu).innerHTML = `Cpu: ${cpuchoice}`;
         if(winner === "user") {
             thcpu.style.opacity = 0.5;
-            userscore++;
-            document.querySelector(".th-user").innerHTML = `User: ${userscore}`
-            console.log(`Userscore: ${userscore}`)
+            userscore(1);
+            document.querySelector(".th-user").innerHTML = `User: ${userscore(0)}`
         }
         else if(winner === "cpu") {
             thuser.style.opacity = 0.5;
-            for(let i = 0; i < dbdata.length; i++){
-                if(dbdata[i].score === userscore){
-                    updatehighscore(i);
-                    break
-                }
-            }
+            fetchhighscore(userscore(0))
             reset()
         }
         else {
@@ -131,16 +147,37 @@ function  loaded() {
         }
     }
 
-    function updatehighscore(i) {
+    function fetchhighscore(score) {
+        let json = fetchdata()
+        async function fetchdata() {
+            const data = await fetch(`https://rockpaperscissors-73f7c-default-rtdb.europe-west1.firebasedatabase.app/.json`)
+            return data.json()
+        }
+        json.then(d => updatehighscore(d, score))
+    }
+
+    function updatehighscore(data, score) {
+        let scores = [];
+        for(var i in data) {
+            scores.push(data[i]);
+        }
+        scores.push({'name': name(), 'score': score});
+        scores.sort(function (a, b) {
+            return b.score - a.score;
+        });
+        for(let i = 0; i < 5; i++) {
+            puthighscore(scores[i], i);
+        }
+    }
+
+    // fetchhighscore(20);
+
+    function puthighscore(score, i){
         fetch(`https://rockpaperscissors-73f7c-default-rtdb.europe-west1.firebasedatabase.app/${i}.json`, {
             method: 'PUT',
-            body: JSON.stringify({
-                'name': name,
-                'score': userscore 
-            }),
+            body: JSON.stringify({'name': score.name,'score': score.score}),
             headers: {'Content-type': 'application/json; charset=UTF-8'}
         })
-
     }
 
     // Translates number into the corresponding string 
@@ -161,9 +198,7 @@ function  loaded() {
         document.querySelector(".article-leaderboard").remove()
         document.querySelector(".article-history").remove()
         document.querySelector(".article-buttons").remove()
-        alert("You lost :(")
-        loaded()
+        alert(`You lost with a highscore of: ${userscore(0)}`)
+        spawnForm()
     }
 }
-
-loaded();
