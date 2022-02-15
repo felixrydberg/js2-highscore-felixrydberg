@@ -170,8 +170,6 @@ function game(parameter) {
         }
     }
 
-    // fetchhighscore(20);
-
     function puthighscore(score, i){
         fetch(`https://rockpaperscissors-73f7c-default-rtdb.europe-west1.firebasedatabase.app/${i}.json`, {
             method: 'PUT',
